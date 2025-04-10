@@ -91,6 +91,9 @@ public class GameState {
     4-bottom right
      */
     public void expandBoard() {
+        if(boardSize == 4) {
+            throw new IllegalArgumentException("board is already at Max size");
+        }
         boardSize = 4;
         char[][] newBoard = new char[boardSize][boardSize];
 

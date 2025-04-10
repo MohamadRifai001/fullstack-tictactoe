@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class GameStateTest {
 
     private GameState gameState;
-    Player player1;
-    Player player2;
+    private Player player1;
+    private Player player2;
 
     @BeforeEach
     public void setUp() {
@@ -119,6 +119,12 @@ class GameStateTest {
         assertFalse(gameState.isBoardFull()); // is not full here
         gameState.makeMove(2,1, player1.getId());
         assertTrue(gameState.isBoardFull());
+    }
+
+    @Test
+    public void invalidExpansion() {
+        gameState.expandBoard();
+        assertThrows(IllegalArgumentException.class, () -> gameState.expandBoard());
     }
 
     /*
