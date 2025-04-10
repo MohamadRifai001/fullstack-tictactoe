@@ -27,13 +27,12 @@ public class GameController {
         Player player1 = new Player(request.getPlayer1Name());
         Player player2 = new Player(request.getPlayer2Name());
         String gameId = gameService.createGame(player1, player2);
-
-        return ResponseEntity.ok((gameId));
+        return ResponseEntity.ok(gameId);
     }
 
     @PostMapping("/{gameId}/move")
     public ResponseEntity<GameState> makeMove(@PathVariable String gameId, @RequestBody MoveRequest request) {
-        GameState game = gameService.makeMove(gameId, request.getRow(), request.getCol(), request.getPlayerID());
+        GameState game = gameService.makeMove(gameId, request.getRow(), request.getCol(), request.getPlayerId());
         return ResponseEntity.ok(game);
     }
     @PostMapping("/{gameId}/expandBoard")
