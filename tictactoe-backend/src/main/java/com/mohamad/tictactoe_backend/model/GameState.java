@@ -1,0 +1,235 @@
+package com.mohamad.tictactoe_backend.model;
+
+
+import java.util.Random;
+
+/*
+stores the current GameState information and handles game moves.
+ */
+public class GameState {
+    private char[][] board;
+    private int boardSize;
+    private Player playerX;
+    private Player playerO;
+    private char currentPlayer; // 'X' or 'O'
+    private GameStatus status;
+
+    public enum GameStatus {
+        IN_PROGRESS,
+        WIN,
+        TIE,
+        EXPANDED_TO_4x4,
+        WAITING_FOR_MINIGAME
+    }
+
+    public GameState(Player p1, Player p2) {
+        this.boardSize = 3;
+        this.board = new char[boardSize][boardSize];
+        this.playerX = p1;
+        this.playerO = p2;
+        this.currentPlayer = 'X';
+        this.status = GameStatus.IN_PROGRESS;
+        initBoard();
+    }
+    /*
+    set the board to empty at first
+     */
+    private void initBoard() {
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                board[i][j] = ' ';
+            }
+        }
+    }
+
+    /*
+    Player takes their turn, places 'X' or 'O' in the designated cell
+     */
+
+    public void makeMove(int row, int col, String playerId) {
+        if (row < 0 || col < 0 || row >= boardSize || col >= boardSize) {
+            throw new IllegalArgumentException("Out of bounds");
+        };
+        if (board[row][col] != ' ') {
+            throw new IllegalArgumentException("This tile is already used!");
+        }
+
+        currentPlayer = playerSymbol(playerId);
+
+        board[row][col] = currentPlayer;
+
+        updateGameStatus();
+    }
+    /*
+    checks if a player won, if the board is a 3x3 tie, or a 4x4 tie, and updates status accordingly
+     */
+    public void updateGameStatus() {
+        Character winner = checkWinner();
+        if (winner != null) {
+            status = GameStatus.WIN;
+        }
+        else if (isBoardFull()) {
+            if (boardSize == 3) {
+                status = GameStatus.WAITING_FOR_MINIGAME;
+            }
+            else {
+                status = GameStatus.TIE;
+            }
+        }
+    }
+
+    /*
+    expands 3x3 board towards a random direction and turns it into a 4x4 board
+    1-top left
+    example top left:
+    X X X _
+    X X X _
+    X X X _
+    _ _ _ _
+    2-top right
+    3-bottom left
+    4-bottom right
+     */
+    public void expandBoard() {
+        boardSize = 4;
+        char[][] newBoard = new char[boardSize][boardSize];
+
+        // Initialize new board with empty spaces
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                newBoard[i][j] = ' ';
+            }
+        }
+
+        // Randomly choose one of the four expansion directions (1, 2, 3, 4)
+        Random random = new Random();
+        int direction = random.nextInt(4) + 1;
+
+        // Expand the 3x3 board based on the chosen direction
+        switch (direction) {
+            case 1: // Top-left expansion
+                for (int i = 0; i < 3; i++) {
+                    System.arraycopy(board[i], 0, newBoard[i], 0, 3);
+                }
+                break;
+
+            case 2: // Top-right expansion
+                for (int i = 0; i < 3; i++) {
+                    System.arraycopy(board[i], 0, newBoard[i], 1, 3);
+                }
+                break;
+
+            case 3: // Bottom-left expansion
+                for (int i = 0; i < 3; i++) {
+                    System.arraycopy(board[i], 0, newBoard[i + 1], 0, 3);
+                }
+                break;
+
+            case 4: // Bottom-right expansion
+                for (int i = 0; i < 3; i++) {
+                    System.arraycopy(board[i], 0, newBoard[i + 1], 1, 3);
+                }
+                break;
+        }
+
+        // Update the board to the new expanded board
+        board = newBoard;
+        status = GameStatus.EXPANDED_TO_4x4;
+    }
+
+    /*
+    checks if there is any 3 in a row combination for example:
+    x|x|x <- three in a row 'X' O|x|x here diagonal 3 in a row with 'O'
+    O|O|                        X|O|X
+     | |                        O|X|O
+
+     -|-|-|O <- after 4x4 expansion there is a 3 in a row here with 'O'
+     O|X|O|-
+     X|O|X|-
+     X|O|X|-
+
+     */
+    public Character checkWinner() {
+        int sequenceLength = 3;
+
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                char current = board[i][j];
+                if (current == ' ') continue;
+
+                // Check horizontal (right)
+                if (j + sequenceLength - 1 < boardSize &&
+                        board[i][j + 1] == current &&
+                        board[i][j + 2] == current) {
+                    return current;
+                }
+
+                // Check vertical (down)
+                if (i + sequenceLength - 1 < boardSize &&
+                        board[i + 1][j] == current &&
+                        board[i + 2][j] == current) {
+                    return current;
+                }
+
+                // Check diagonal down-right
+                if (i + sequenceLength - 1 < boardSize &&
+                        j + sequenceLength - 1 < boardSize &&
+                        board[i + 1][j + 1] == current &&
+                        board[i + 2][j + 2] == current) {
+                    return current;
+                }
+
+                // Check diagonal up-right
+                if (i - sequenceLength + 1 >= 0 &&
+                        j + sequenceLength - 1 < boardSize &&
+                        board[i - 1][j + 1] == current &&
+                        board[i - 2][j + 2] == current) {
+                    return current;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public boolean isBoardFull() {
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                if (board[i][j] == ' ') return false;
+            }
+        }
+        return true;
+    }
+
+    private Character playerSymbol(String playerId) {
+        if (playerId.equals(playerX.getId())) return 'X';
+        if (playerId.equals(playerO.getId())) return 'O';
+        throw new IllegalArgumentException("Player not found");
+    }
+
+    // Getters -- needed for Spring boot serialization
+
+    public char[][] getBoard() {
+        return board;
+    }
+
+    public char getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public GameStatus getStatus() {
+        return status;
+    }
+
+    public int getBoardSize() {
+        return boardSize;
+    }
+
+    public Player getPlayerX() {
+        return playerX;
+    }
+
+    public Player getPlayerO() {
+        return playerO;
+    }
+}
