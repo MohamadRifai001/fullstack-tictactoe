@@ -11,7 +11,7 @@ public class GameState {
     private int boardSize;
     private Player player1;
     private Player player2;
-    private Player currentPlayer; // 'X' or 'O'
+    private Player currentPlayer; //player1 or player2
     private GameStatus status;
 
     public enum GameStatus {
@@ -144,7 +144,7 @@ public class GameState {
 
     /*
     checks if there is any 3 in a row combination for example:
-    x|x|x <- three in a row 'X' O|x|x here diagonal 3 in a row with 'O'
+    x|x|x <- three in a row 'X' O|X|X here diagonal 3 in a row with 'O'
     O|O|                        X|O|X
      | |                        O|X|O
 
