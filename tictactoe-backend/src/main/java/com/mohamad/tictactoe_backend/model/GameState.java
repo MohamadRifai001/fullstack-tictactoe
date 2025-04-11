@@ -1,9 +1,6 @@
 package com.mohamad.tictactoe_backend.model;
 
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Random;
 
 /*
@@ -12,9 +9,9 @@ stores the current GameState information and handles game moves.
 public class GameState {
     private char[][] board;
     private int boardSize;
-    private Player playerX;
-    private Player playerO;
-    private char currentPlayer; // 'X' or 'O'
+    private Player player1;
+    private Player player2;
+    private Player currentPlayer; // 'X' or 'O'
     private GameStatus status;
 
     public enum GameStatus {
@@ -28,9 +25,11 @@ public class GameState {
     public GameState(Player p1, Player p2) {
         this.boardSize = 3;
         this.board = new char[boardSize][boardSize];
-        this.playerX = p1;
-        this.playerO = p2;
-        this.currentPlayer = 'X';
+        this.player1 = p1;
+        p1.setSymbol('X');
+        this.player2 = p2;
+        p2.setSymbol('O');
+        this.currentPlayer = p1;
         this.status = GameStatus.IN_PROGRESS;
         initBoard();
     }
@@ -57,9 +56,9 @@ public class GameState {
             throw new IllegalArgumentException("This tile is already used!");
         }
 
-        currentPlayer = playerSymbol(playerId);
+        currentPlayer = findPlayer(playerId);
 
-        board[row][col] = currentPlayer;
+        board[row][col] = currentPlayer.getSymbol();
 
         updateGameStatus();
     }
@@ -207,9 +206,9 @@ public class GameState {
         return true;
     }
 
-    private Character playerSymbol(String playerId) {
-        if (playerId.equals(playerX.getId())) return 'X';
-        if (playerId.equals(playerO.getId())) return 'O';
+    private Player findPlayer(String playerId) {
+        if (playerId.equals(player1.getId())) return player1;
+        if (playerId.equals(player2.getId())) return player2;
         throw new IllegalArgumentException("Player not found");
     }
 
@@ -219,7 +218,7 @@ public class GameState {
         return board;
     }
 
-    public char getCurrentPlayer() {
+    public Player getCurrentPlayer() {
         return currentPlayer;
     }
 
@@ -231,11 +230,11 @@ public class GameState {
         return boardSize;
     }
 
-    public Player getPlayerX() {
-        return playerX;
+    public Player getPlayer1() {
+        return player1;
     }
 
-    public Player getPlayerO() {
-        return playerO;
+    public Player getPlayer2() {
+        return player2;
     }
 }

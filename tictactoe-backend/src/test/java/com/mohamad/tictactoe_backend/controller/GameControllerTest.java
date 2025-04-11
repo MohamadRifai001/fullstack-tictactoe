@@ -81,8 +81,8 @@ class GameControllerTest {
                 .andDo(print())
                 .andExpect(jsonPath("$.board").exists())
                 .andExpect(jsonPath("$.status").value("IN_PROGRESS"))
-                .andExpect(jsonPath("$.playerX.id").value(player1.getId()))
-                .andExpect(jsonPath("$.playerO.id").value(player2.getId()));
+                .andExpect(jsonPath("$.player1.id").value(player1.getId()))
+                .andExpect(jsonPath("$.player2.id").value(player2.getId()));
     }
 
     /*
@@ -99,6 +99,6 @@ class GameControllerTest {
 
         mockMvc.perform(get("/api/game/{gameId}", mockGameId))
                 .andExpect(jsonPath("$.board").exists())
-                .andExpect(jsonPath("$.playerX.id").value(player1.getId()));
+                .andExpect(jsonPath("$.player1.id").value(player1.getId()));
     }
 }
