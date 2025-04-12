@@ -144,7 +144,7 @@ public class GameState {
 
     /*
     checks if there is any 3 in a row combination for example:
-    x|x|x <- three in a row 'X' O|X|X here diagonal 3 in a row with 'O'
+    x|x|x <- three in a row 'X' O|Xhere diagonal 3 in a row with 'O'
     O|O|                        X|O|X
      | |                        O|X|O
 
