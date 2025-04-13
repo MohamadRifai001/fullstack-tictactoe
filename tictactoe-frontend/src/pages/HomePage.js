@@ -18,7 +18,7 @@ function HomePage() {
 
         try {
             const lobby = await createLobby(result.name);
-            navigate(`/lobby/${lobby.lobbyCode}`);
+            navigate(`/lobby/${lobby.lobbyCode}`, { state: { playerName: result } });
         } catch (error) {
             console.error('Error creating lobby:', error);
             alert('Failed to create lobby. Please try again.');
@@ -32,8 +32,8 @@ function HomePage() {
             return;
         }
         try {
-            const lobbyCode = await joinLobby(joinCode);
-            navigate(`/lobby/${lobbyCode}`);
+            const lobby = await joinLobby(joinCode, playerName);
+            navigate(`/lobby/${lobby.lobbyCode}`, { state: { playerName: result } });
         } catch (error) {
             console.error('Error joining lobby:', error);
             alert('Failed to join lobby. Please check the code and try again.');

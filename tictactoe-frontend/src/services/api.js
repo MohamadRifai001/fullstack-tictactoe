@@ -66,12 +66,33 @@ export async function createLobby(player1) {
   return await res.json();
 }
 
-export const joinLobby = async (code) => {
-  const res = await fetch(`${API_BASE}/lobby/join/${code}`, { method: 'POST' });
+export const joinLobby = async (code, player2) => {
+  const res = await fetch(`${API_BASE}/lobby/join/${code}`, {
+     method: 'POST',
+     headers: { 'Content-Type': 'application/json' },
+     body: JSON.stringify({ player2Name: player2}), // Replace with actual player name if needed
+    });
   return res.json();
 };
 
-export const startLobbyGame = async (code) => {
+export const startLobbyGame = async (code, playerName) => {
   const res = await fetch(`${API_BASE}/lobby/start/${code}`, { method: 'POST' });
   return res.json();
+};
+
+export const playerReadyUp = async (code, player) => { 
+  const res = await fetch(`${API_BASE}/lobby/ready/${code}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ playerName: player}),
+  });
+  return res.json();
+};
+
+export const sendHeartbeat = async (code, player) => {
+  return fetch(`${API_BASE}/lobby/heartbeat/${code}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ playerName: player}),
+  });
 };

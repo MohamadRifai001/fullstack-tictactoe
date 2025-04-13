@@ -34,7 +34,7 @@ public class LobbyController {
 
     @PostMapping("/join/{code}")
     public ResponseEntity<?> joinLobby(@PathVariable String code, @RequestBody Map<String, String> body) {
-        String playerName = body.get("playerName");
+        String playerName = body.get("player2Name");
         Lobby lobby = lobbyService.joinLobby(code, playerName);
         if (lobby != null) {
             return ResponseEntity.ok(lobby);
@@ -54,15 +54,28 @@ public class LobbyController {
         }
     }
 
-    @PostMapping("/start/{code}")
-    public ResponseEntity<?> startLobbyGame(@PathVariable String code) {
-        boolean started = lobbyService.startLobbyGame(code);
-        if (started) {
-            return ResponseEntity.ok("Game started and lobby removed");
-        }
-        else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cannot start game: lobby not full or not found.");
-        }
+
+    @PostMapping("/ready/{code}")
+    public ResponseEntity<?> playerReadyUp(@PathVariable String code, @RequestBody Map<String, String> body) {
+        String playerName = body.get("playerName");
+        boolean success = lobbyService.playerReadyUp(code, playerName);
+
+        if(success)  return ResponseEntity.ok(Map.of("status", "success"));
+
+        return ResponseEntity.badRequest().body("Failed to ready up player");
+    }
+
+    @PostMapping("/heartbeat/{code}")
+    public ResponseEntity<?> processHeartBeat(@PathVariable String code, @RequestBody Map<String, String> body) {
+        System.out.println("I'm" + code);
+        System.out.println(lobbyService.getAllLobbies());
+        String playerName = body.get("playerName");
+
+        Lobby lobby = lobbyService.getLobby(code);
+        if (lobby == null) return ResponseEntity.badRequest().body("Lobby not found");
+
+        lobbyService.processHeartBeat(code, playerName);
+        return ResponseEntity.ok().build();
     }
 
 }

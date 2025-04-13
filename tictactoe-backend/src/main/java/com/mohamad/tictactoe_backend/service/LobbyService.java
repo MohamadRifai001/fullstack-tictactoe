@@ -1,15 +1,24 @@
 package com.mohamad.tictactoe_backend.service;
 
 import com.mohamad.tictactoe_backend.model.Lobby;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class LobbyService {
     private Map<String, Lobby> lobbies = new ConcurrentHashMap<>();
+
+    public List<String> getAllLobbies() {
+        List<String> lobbyCodes = new ArrayList<>();
+
+        for(Lobby lobby : lobbies.values()) {
+            lobbyCodes.add(lobby.getLobbyCode());
+        }
+        return lobbyCodes;
+    }
 
 
     public Lobby createLobby(String player1Name) {
@@ -21,7 +30,10 @@ public class LobbyService {
 
     public Lobby joinLobby(String lobbyCode, String player2Name) {
         Lobby lobby = lobbies.get(lobbyCode);
-        if (lobby == null) throw new IllegalArgumentException("Lobby not found");
+        if (lobby == null) return null;
+        if(lobby.getPlayer2() != null) {
+            return null;
+        }
 
         lobby.player2Join(player2Name);
 
@@ -32,16 +44,6 @@ public class LobbyService {
         return lobbies.get(lobbyCode);
     }
 
-    public boolean startLobbyGame(String code) {
-        Lobby lobby = lobbies.get(code);
-        if (lobby != null && lobby.isFull()) {
-            lobby.setStarted(true);
-            lobbies.remove(code); // Remove lobby when game starts
-            return true;
-        }
-        return false;
-    }
-
     private String generateUniqueCode() {
         String code;
         do {
@@ -50,5 +52,42 @@ public class LobbyService {
         return code;
     }
 
+    public boolean playerReadyUp(String lobbyCode, String playerName) {
+        Lobby lobby = lobbies.get(lobbyCode);
+        return lobby.playerReadyUp(playerName);
+    }
+
+    public void processHeartBeat(String lobbyCode, String playerName) {
+        Lobby lobby = lobbies.get(lobbyCode);
+        long now = System.currentTimeMillis();
+        if (playerName.equals(lobby.getPlayer1())) {
+            lobby.setPlayer1LastSeen(now);
+        } else if (playerName.equals(lobby.getPlayer2())) {
+            lobby.setPlayer2LastSeen(now);
+        }
+    }
+
+
+
+
+    /*
+    deletes a lobby if heartbeat was not sent within the past 30s(heartbeat should be sent every 10seconds)
+     */
+    @Scheduled(fixedRate = 30000)
+    public void cleanupInactiveLobbies() {
+        long now = System.currentTimeMillis();
+        Iterator<Map.Entry<String, Lobby>> iterator = lobbies.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Lobby> entry = iterator.next();
+            Lobby lobby = entry.getValue();
+
+            boolean player1Inactive = now - lobby.getPlayer1LastSeen() > 30000;
+            boolean player2Inactive = lobby.getPlayer2() == null || now - lobby.getPlayer2LastSeen() > 30000;
+
+            if (player1Inactive && player2Inactive) {
+                iterator.remove();
+            }
+        }
+    }
 
 }
