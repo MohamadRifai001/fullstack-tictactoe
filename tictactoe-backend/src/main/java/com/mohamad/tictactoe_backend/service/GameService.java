@@ -19,11 +19,10 @@ public class GameService {
 
     private final Map<String, GameState> games = new ConcurrentHashMap<>();
 
-    public String createGame(Player player1, Player player2) {
-        String gameId = UUID.randomUUID().toString();
+    public GameState createGame(String gameId, Player player1, Player player2) {
         GameState game = new GameState(player1, player2);
         games.put(gameId, game);
-        return gameId;
+        return game;
     }
 
     /*

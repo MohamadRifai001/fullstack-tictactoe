@@ -37,9 +37,13 @@ class GameControllerTest {
      */
     @Test
     void startGame() throws Exception {
+        Player player1 = new Player("player1");
+        Player player2 = new Player("player2");
+
         String mockGameId = "game123";
-        when(gameService.createGame(any(Player.class), any(Player.class)))
-                .thenReturn(mockGameId);
+        GameState mockGameState = new GameState(player1, player2);
+        when(gameService.createGame(anyString(), any(Player.class), any(Player.class)))
+                .thenReturn(mockGameState);
 
         String requestJson = """
             {
@@ -48,11 +52,14 @@ class GameControllerTest {
             }
             """;
 
-        mockMvc.perform(post("/api/game/start")
+        mockMvc.perform(post("/api/game/{gameId}/start", mockGameId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isOk())
-                .andExpect(content().string(mockGameId));
+                .andExpect(jsonPath("$.board").exists())
+                .andExpect(jsonPath("$.status").value("IN_PROGRESS"))
+                .andExpect(jsonPath("$.player1.id").value(player1.getId()))
+                .andExpect(jsonPath("$.player2.id").value(player2.getId()));
     }
 
     /*

@@ -67,8 +67,6 @@ public class LobbyController {
 
     @PostMapping("/heartbeat/{code}")
     public ResponseEntity<?> processHeartBeat(@PathVariable String code, @RequestBody Map<String, String> body) {
-        System.out.println("I'm" + code);
-        System.out.println(lobbyService.getAllLobbies());
         String playerName = body.get("playerName");
 
         Lobby lobby = lobbyService.getLobby(code);

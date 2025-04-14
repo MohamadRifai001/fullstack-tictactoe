@@ -7,7 +7,7 @@ import java.util.Random;
 stores the current GameState information and handles game moves.
  */
 public class GameState {
-    private char[][] board;
+    private String[][] board;
     private int boardSize;
     private Player player1;
     private Player player2;
@@ -24,11 +24,11 @@ public class GameState {
 
     public GameState(Player p1, Player p2) {
         this.boardSize = 3;
-        this.board = new char[boardSize][boardSize];
+        this.board = new String[boardSize][boardSize];
         this.player1 = p1;
-        p1.setSymbol('X');
+        p1.setSymbol("X");
         this.player2 = p2;
-        p2.setSymbol('O');
+        p2.setSymbol("O");
         this.currentPlayer = p1;
         this.status = GameStatus.IN_PROGRESS;
         initBoard();
@@ -39,7 +39,7 @@ public class GameState {
     private void initBoard() {
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
-                board[i][j] = ' ';
+                board[i][j] = "-";
             }
         }
     }
@@ -52,7 +52,7 @@ public class GameState {
         if (row < 0 || col < 0 || row >= boardSize || col >= boardSize) {
             throw new IllegalArgumentException("Out of bounds");
         };
-        if (board[row][col] != ' ') {
+        if (board[row][col] != "-") {
             throw new IllegalArgumentException("This tile is already used!");
         }
 
@@ -66,7 +66,7 @@ public class GameState {
     checks if a player won, if the board is a 3x3 tie, or a 4x4 tie, and updates status accordingly
      */
     public void updateGameStatus() {
-        Character winner = checkWinner();
+        String winner = checkWinner();
         if (winner != null) {
             status = GameStatus.WIN;
         }
@@ -97,12 +97,12 @@ public class GameState {
             throw new IllegalArgumentException("board is already at Max size");
         }
         boardSize = 4;
-        char[][] newBoard = new char[boardSize][boardSize];
+        String[][] newBoard = new String[boardSize][boardSize];
 
         // Initialize new board with empty spaces
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
-                newBoard[i][j] = ' ';
+                newBoard[i][j] = "-";
             }
         }
 
@@ -154,41 +154,41 @@ public class GameState {
      X|O|X|-
 
      */
-    public Character checkWinner() {
+    public String checkWinner() {
         int sequenceLength = 3;
 
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
-                char current = board[i][j];
-                if (current == ' ') continue;
+                String current = board[i][j];
+                if (current.equals("-")) continue;
 
                 // Check horizontal (right)
                 if (j + sequenceLength - 1 < boardSize &&
-                        board[i][j + 1] == current &&
-                        board[i][j + 2] == current) {
+                        board[i][j + 1].equals(current) &&
+                        board[i][j + 2].equals(current)) {
                     return current;
                 }
 
                 // Check vertical (down)
                 if (i + sequenceLength - 1 < boardSize &&
-                        board[i + 1][j] == current &&
-                        board[i + 2][j] == current) {
+                        board[i + 1][j].equals(current) &&
+                        board[i + 2][j].equals(current)) {
                     return current;
                 }
 
                 // Check diagonal down-right
                 if (i + sequenceLength - 1 < boardSize &&
                         j + sequenceLength - 1 < boardSize &&
-                        board[i + 1][j + 1] == current &&
-                        board[i + 2][j + 2] == current) {
+                        board[i + 1][j + 1].equals(current)&&
+                        board[i + 2][j + 2].equals(current)) {
                     return current;
                 }
 
                 // Check diagonal up-right
                 if (i - sequenceLength + 1 >= 0 &&
                         j + sequenceLength - 1 < boardSize &&
-                        board[i - 1][j + 1] == current &&
-                        board[i - 2][j + 2] == current) {
+                        board[i - 1][j + 1].equals(current) &&
+                        board[i - 2][j + 2].equals(current)) {
                     return current;
                 }
             }
@@ -200,7 +200,7 @@ public class GameState {
     public boolean isBoardFull() {
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
-                if (board[i][j] == ' ') return false;
+                if (board[i][j].equals("-")) return false;
             }
         }
         return true;
@@ -214,7 +214,7 @@ public class GameState {
 
     // Getters -- needed for Spring boot serialization
 
-    public char[][] getBoard() {
+    public String[][] getBoard() {
         return board;
     }
 

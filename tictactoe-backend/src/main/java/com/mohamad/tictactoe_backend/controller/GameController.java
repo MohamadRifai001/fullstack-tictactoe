@@ -22,12 +22,12 @@ public class GameController {
     }
 
 
-    @PostMapping("/start")
-    public ResponseEntity<String> startGame(@RequestBody CreateGameRequest request) {
+    @PostMapping("/{gameId}/start")
+    public ResponseEntity<GameState> startGame(@PathVariable String gameId, @RequestBody CreateGameRequest request) {
         Player player1 = new Player(request.getPlayer1Name());
         Player player2 = new Player(request.getPlayer2Name());
-        String gameId = gameService.createGame(player1, player2);
-        return ResponseEntity.ok(gameId);
+        GameState game = gameService.createGame(gameId, player1, player2);
+        return ResponseEntity.ok(game);
     }
 
     @PostMapping("/{gameId}/move")
@@ -43,6 +43,7 @@ public class GameController {
 
     @GetMapping("/{gameId}")
     public ResponseEntity<GameState> getGame(@PathVariable String gameId) {
-        return ResponseEntity.ok(gameService.getGame(gameId));
+        GameState game = gameService.getGame(gameId);
+        return ResponseEntity.ok(game);
     }
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getLobbyStatus, startLobbyGame, playerReadyUp, sendHeartbeat } from '../services/api';
+import { startGame, getLobbyStatus, playerReadyUp, sendHeartbeat } from '../services/api';
 import { useLocation } from 'react-router-dom';
 import "../styles/LobbyPage.css";
 
@@ -10,18 +10,15 @@ function LobbyPage() {
   const playerName = location.state?.playerName;
   const [players, setPlayers] = useState([]);
   const [ready, setReady] = useState(false);
-  const [gameStarted, setGameStarted] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      console.log("lobbyCode", lobbyCode);
       const status = await getLobbyStatus(lobbyCode);
       if (status) {
         setPlayers([status.player1, status.player2].filter(Boolean));
-        setGameStarted(status.started);
         if (status.started) {
-          navigate(`/game/${lobbyCode}`);
+          navigate(`/game/${lobbyCode}`, { state: { playerName: playerName.name} });
         }
       }
     }, 1000);
@@ -32,7 +29,7 @@ function LobbyPage() {
     const heartbeat = setInterval(() => {
       sendHeartbeat(lobbyCode, playerName.name);
     }, 10000); 
-    
+
     return () => clearInterval(heartbeat);
   }, [lobbyCode, playerName]);
 
@@ -45,17 +42,18 @@ function LobbyPage() {
 
     await playerReadyUp(lobbyCode, playerName.name);
     setReady(true);
-  }
 
-  const handleStartGame = async () => {
-    if(!playerName) {
-      alert("player name missing");
-      return;
+    const status = await getLobbyStatus(lobbyCode);
+
+    if (status && status.started) {
+      try {
+        await startGame(lobbyCode, players[0], players[1]);
+      } catch(err) {
+        console.error("Error creating game:", err);
+        alert("Error creating game. Please try again.");
+      }
     }
-
-    await startLobbyGame(lobbyCode, playerName.name);
-    setReady(true);
-  };
+  }
 
   return (
     <div className="lobby-page">

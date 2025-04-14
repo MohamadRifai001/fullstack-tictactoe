@@ -9,7 +9,7 @@ stores player information
 public class Player {
     private final String id;
     private final String name;
-    private char symbol;
+    private String symbol;
 
     public Player(String name) {
         this.id = UUID.randomUUID().toString();
@@ -20,6 +20,6 @@ public class Player {
 
     public String getId() { return this.id; }
     public String getName() { return this.name; }
-    public void setSymbol(char symbol) { this.symbol = symbol; }
-    public char getSymbol() { return this.symbol; }
+    public void setSymbol(String symbol) { this.symbol = symbol; }
+    public String getSymbol() { return this.symbol; }
 }

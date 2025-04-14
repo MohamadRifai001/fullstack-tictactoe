@@ -22,7 +22,8 @@ class GameServiceTest {
         this.player1 = new Player("player1");
         this.player2 = new Player("player2");
         gameService = new GameService();
-        gameId = gameService.createGame(player1, player2);
+        gameId = "game123";
+        GameState game = gameService.createGame(gameId, player1, player2);
     }
 
     @Test

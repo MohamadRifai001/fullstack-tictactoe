@@ -23,10 +23,10 @@ class GameStateTest {
      */
     @Test
     public void testInitBoard() {
-        char[][] board = gameState.getBoard();
-        for(char[] row : board) {
-            for(char cell : row) {
-                assertEquals(' ', cell);
+        String[][] board = gameState.getBoard();
+        for(String[] row : board) {
+            for(String cell : row) {
+                assertEquals("-", cell);
             }
         }
     }
@@ -39,8 +39,8 @@ class GameStateTest {
     public void testMakeMoveValid() {
         gameState.makeMove(0, 0, player1.getId());
         gameState.makeMove(0, 1, player2.getId());
-        assertEquals('X', gameState.getBoard()[0][0]);
-        assertEquals('O', gameState.getBoard()[0][1]);
+        assertEquals("X", gameState.getBoard()[0][0]);
+        assertEquals("O", gameState.getBoard()[0][1]);
     }
     /*
     throws exception if a player tries to use a tile that is already being used.
@@ -69,7 +69,7 @@ class GameStateTest {
         gameState.makeMove(1, 2, player2.getId());
         gameState.makeMove(2, 2, player2.getId());
 
-        assertEquals('O', gameState.checkWinner());
+        assertEquals("O", gameState.checkWinner());
     }
 
     /*
@@ -89,7 +89,7 @@ class GameStateTest {
         gameState.makeMove(1, 2, player2.getId());
         gameState.makeMove(2, 0, player2.getId());
 
-        assertEquals('X', gameState.checkWinner());
+        assertEquals("X", gameState.checkWinner());
     }
 
     /*
@@ -137,7 +137,7 @@ class GameStateTest {
         gameState.makeMove(0, 1, player2.getId());
         gameState.makeMove(0, 2, player2.getId());
 
-        assertEquals('O', gameState.checkWinner());
+        assertEquals("O", gameState.checkWinner());
     }
 
 

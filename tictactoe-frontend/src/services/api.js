@@ -5,8 +5,8 @@ const API_BASE = "http://localhost:8080/api"; //replace name with backend, put l
 following methods are for interacting with the backend for game management
 */
 // Tells the backend server to start a new game with the given player names
-export async function startGame(player1, player2) {
-  const res = await fetch(`${API_BASE}/game/start`, {
+export async function startGame(gameId, player1, player2) {
+  const res = await fetch(`${API_BASE}/game/${gameId}/start`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ player1Name: player1, player2Name: player2 }),
@@ -36,10 +36,12 @@ export async function notifyMinigameResult(gameId) {
 // retrieves the current game state from the backend server
 export async function getGameState(gameId) {
   const res = await fetch(`${API_BASE}/game/${gameId}`);
+
   if (!res.ok) {
     throw new Error("Failed to fetch game state");
   }
-  return await res.json(); // GameState
+  const data = await res.json();
+  return data;
 }
 
 /*
@@ -72,11 +74,6 @@ export const joinLobby = async (code, player2) => {
      headers: { 'Content-Type': 'application/json' },
      body: JSON.stringify({ player2Name: player2}), // Replace with actual player name if needed
     });
-  return res.json();
-};
-
-export const startLobbyGame = async (code, playerName) => {
-  const res = await fetch(`${API_BASE}/lobby/start/${code}`, { method: 'POST' });
   return res.json();
 };
 
