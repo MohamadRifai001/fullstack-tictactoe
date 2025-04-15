@@ -33,3 +33,46 @@
     color: red;
     font-weight: bold;
   }
+
+
+  .minigame button {
+    padding: 12px 24px;
+    margin: 10px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 8px;
+    background-color: #0004ff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .minigame button:hover {
+    background-color: #00aeff;
+  }
+
+  .button-slide {
+    padding: 12px 24px;
+    font-size: 1rem;
+    color: white;
+    background: linear-gradient(to right, #0077ff, #00c6ff);
+    border: none;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s ease;
+  }
+  
+  .button-slide::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: skewX(-45deg);
+    transition: left 0.4s ease;
+  }
+  
+  .button-slide:hover::after {
+    left: 100%;
+  }

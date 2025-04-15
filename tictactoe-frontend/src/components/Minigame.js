@@ -18,7 +18,7 @@ const MiniGame = ({ lobbyCode, playerId, onWin }) => {
   return (
     <div className="minigame">
       <p>🏃 First to click gets their turn first on the new board</p>
-      <button onClick={handleWin}>Click fast!</button>
+      <button className="button-slide" onClick={handleWin}>Click fast!</button>
     </div>
   );
 };
