@@ -45,6 +45,15 @@ export async function notifyMinigameResult(gameId, playerId) {
   return await res.json(); // updated GameState
 }
 
+export async function rematch(gameId, playerId) {
+  const res = await fetch(`${API_BASE}/game/${gameId}/rematch`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ playerId: playerId }),
+  });
+  return await res.json(); // updated GameState
+}
+
 
 /*
 the following methods are for interacting with the backend for lobby management

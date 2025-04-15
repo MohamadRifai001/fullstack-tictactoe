@@ -4,7 +4,6 @@ import { notifyMinigameResult } from '../services/api';
 const MiniGame = ({ lobbyCode, playerId, onWin }) => {
   const handleWin = async () => {
     try {
-        console.log("Notifying minigame result...", lobbyCode, playerId);
         const res = await notifyMinigameResult(lobbyCode, playerId);
         if(res.status === 409) {
             alert("Too late! other player already won.")

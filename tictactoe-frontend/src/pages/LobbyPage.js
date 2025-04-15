@@ -34,7 +34,7 @@ function LobbyPage() {
       } catch (error) {
         console.error("Error fetching lobby status:", error);
         setFetchFailures((prev) => prev + 1);
-        if (fetchFailures >= 3) {
+        if (fetchFailures > 3) {
           alert("Failed to fetch lobby status. Please try again later.");
           clearInterval(interval);
           navigate("/"); // Redirect to home page or handle as needed
@@ -42,7 +42,7 @@ function LobbyPage() {
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, [lobbyCode, navigate]);
+  }, [lobbyCode, fetchFailures, playerName, navigate]);
 
   useEffect(() => {
     const heartbeat = setInterval(() => {
@@ -65,14 +65,6 @@ function LobbyPage() {
 
     if (status && status.started) {
       try {
-        console.log(
-          "Starting game... Lobby code:",
-          lobbyCode,
-          "Player 1:",
-          players[0],
-          "Player 2:",
-          players[1]
-        );
         await startGame(lobbyCode, players[0], players[1]);
       } catch (err) {
         console.error("Error creating game:", err);

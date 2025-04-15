@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
-import { getGameState, makeMove } from "../services/api";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { getGameState, makeMove, rematch } from "../services/api";
 import Board from "../components/Board";
 import StatusBar from "../components/StatusBar";
 import Minigame from "../components/Minigame";
@@ -13,6 +13,8 @@ function GamePage() {
   const [gameState, setGameState] = useState(null);
   const [showMinigame, setShowMinigame] = useState(false);
   const [fetchFailures, setFetchFailures] = useState(0);
+  const [rematchRequested, setRematchRequested] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -24,18 +26,22 @@ function GamePage() {
         } else {
           setShowMinigame(false);
         }
+        if(state.status === "IN_PROGRESS") {
+            setRematchRequested(false);
+        }
         setFetchFailures(0); // Reset fetch failures on successful fetch
       } catch (error) {
         console.error("Error fetching game state:", error);
         setFetchFailures((prev) => prev + 1);
-        if (fetchFailures >= 3) {
-          alert("Failed to fetch game state. Please try again later.");
+        if (fetchFailures > 3) {
+          alert("Game error, sending you to the home page.");
           clearInterval(interval);
+          navigate("/");
         }
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, [lobbyCode]);
+  }, [lobbyCode, fetchFailures, playerName, navigate]);
 
   const handleMove = async (row, col) => {
     if (gameState && gameState.currentPlayer.name === playerName) {
@@ -60,6 +66,16 @@ function GamePage() {
       ? gameState.player2.id
       : null;
 
+  const handleRematch = async () => {
+    try {
+      const updatedState = await rematch(lobbyCode, playerId);
+      setGameState(updatedState);
+      setRematchRequested(true);
+    } catch (error) {
+      console.error("Error processing rematch request:", error);
+    }
+  };
+
   if (!gameState) {
     return <div>Loading...</div>;
   }
@@ -73,6 +89,13 @@ function GamePage() {
         status={gameState.status}
         winner={gameState.winner}
       />
+      {rematchRequested && <h1>Waiting for the other player to rematch</h1>}
+      {(gameState.status === "WIN" || gameState.status === "TIE") &&
+        !rematchRequested && (
+          <button className="rematch-button" onClick={handleRematch}>
+            Rematch
+          </button>
+        )}
       {showMinigame ? (
         <Minigame
           lobbyCode={lobbyCode}

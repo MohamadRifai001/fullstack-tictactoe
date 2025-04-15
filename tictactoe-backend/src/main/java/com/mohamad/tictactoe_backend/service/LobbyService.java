@@ -41,6 +41,7 @@ public class LobbyService {
     }
 
     public Lobby getLobby(String lobbyCode) {
+        System.out.println(lobbies.keySet());
         return lobbies.get(lobbyCode);
     }
 
@@ -85,6 +86,7 @@ public class LobbyService {
             boolean player2Inactive = lobby.getPlayer2() == null || now - lobby.getPlayer2LastSeen() > 30000;
 
             if (player1Inactive && player2Inactive) {
+                System.out.println("gothere?" + lobbies.keySet());
                 iterator.remove();
             }
         }

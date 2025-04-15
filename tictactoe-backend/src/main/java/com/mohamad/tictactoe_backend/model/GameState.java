@@ -15,6 +15,9 @@ public class GameState {
     private GameStatus status;
     private String winner;
     private String minigameWinner;
+    private boolean player1Rematch = false;
+    private boolean player2Rematch = false;
+
 
     public enum GameStatus {
         IN_PROGRESS,
@@ -230,6 +233,30 @@ public class GameState {
         status = GameStatus.IN_PROGRESS;
     }
 
+    public void rematchRequest(String playerId) {
+        if(playerId.equals(player1.getId())) {
+            player1Rematch = true;
+        }
+        else if(playerId.equals(player2.getId())) {
+            player2Rematch = true;
+        }
+        if(player1Rematch && player2Rematch) {
+            resetState();
+        }
+    }
+
+    public void resetState() {
+        boardSize = 3;
+        board = new String[boardSize][boardSize];
+        initBoard();
+        currentPlayer = player1;
+        status = GameStatus.IN_PROGRESS;
+        winner = null;
+        minigameWinner = null;
+        player1Rematch = false;
+        player2Rematch = false;
+    }
+
     // Getters -- needed for Spring boot serialization
 
     public String[][] getBoard() {
@@ -262,5 +289,12 @@ public class GameState {
 
     public String getMinigameWinner() {
         return minigameWinner;
+    }
+
+    public boolean isPlayer1Rematch() {
+        return player1Rematch;
+    }
+    public boolean isPlayer2Rematch() {
+        return player2Rematch;
     }
 }

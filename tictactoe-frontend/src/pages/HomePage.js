@@ -8,7 +8,6 @@ function HomePage() {
   const [playerName, setPlayerName] = useState("");
   const [joinCode, setJoinCode] = useState("");
   const navigate = useNavigate();
-
   const handleCreateLobby = async () => {
     const result = validatePlayerName(playerName);
     if (!result.valid) {

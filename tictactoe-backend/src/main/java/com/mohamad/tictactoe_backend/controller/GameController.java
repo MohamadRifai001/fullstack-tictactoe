@@ -62,4 +62,12 @@ public class GameController {
         return ResponseEntity.ok(updatedgame);
     }
 
+    @PostMapping ("/{gameId}/rematch")
+    public ResponseEntity<?> rematch(@PathVariable String gameId, @RequestBody Map<String, String> body) {
+        String playerId = body.get("playerId");
+        GameState game = gameService.rematch(gameId, playerId);
+
+        return ResponseEntity.ok(game);
+    }
+
 }

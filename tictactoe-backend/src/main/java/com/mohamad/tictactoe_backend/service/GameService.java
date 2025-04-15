@@ -48,4 +48,10 @@ public class GameService {
         game.handleMinigame(name);
         return game;
     }
+
+    public GameState rematch(String code, String playerId) {
+        GameState game = games.get(code);
+        game.rematchRequest(playerId);
+        return game;
+    }
 }
