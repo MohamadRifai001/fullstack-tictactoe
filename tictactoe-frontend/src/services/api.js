@@ -24,15 +24,6 @@ export async function makeMove(gameId, row, col, playerId) {
   return await res.json(); // GameState
 }
 
-// Tells the backend when the minigame is over and who won
-export async function notifyMinigameResult(gameId) {
-  const res = await fetch(`${API_BASE}/game/${gameId}/expandBoard`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-  });
-  return await res.json(); // updated GameState
-}
-
 // retrieves the current game state from the backend server
 export async function getGameState(gameId) {
   const res = await fetch(`${API_BASE}/game/${gameId}`);
@@ -43,6 +34,17 @@ export async function getGameState(gameId) {
   const data = await res.json();
   return data;
 }
+
+// notifies who won the minigame and updates the game state
+export async function notifyMinigameResult(gameId, playerId) {
+  const res = await fetch(`${API_BASE}/game/${gameId}/minigame/winner`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ playerId: playerId }),
+  });
+  return await res.json(); // updated GameState
+}
+
 
 /*
 the following methods are for interacting with the backend for lobby management

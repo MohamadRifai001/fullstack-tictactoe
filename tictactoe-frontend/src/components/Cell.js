@@ -1,10 +1,10 @@
 import React from 'react';
 
-const Cell = ({ value, onClick }) => {
+const Cell = ({ value, onClick, gameOver }) => {
   return (
     <button className="cell" 
     onClick={onClick} 
-    disabled={value == "X" || value == "O"}
+    disabled={gameOver || value === "X" || value === "O"}
     >
       {value}
     </button>

@@ -42,4 +42,10 @@ public class GameService {
     public GameState getGame(String gameId) {
         return games.get(gameId);
     }
+
+    public GameState setMinigameWinner(String code, String name) {
+        GameState game = games.get(code);
+        game.handleMinigame(name);
+        return game;
+    }
 }

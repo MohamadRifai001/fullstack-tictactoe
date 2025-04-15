@@ -1,7 +1,7 @@
 import React from 'react';
 import Cell from './Cell';
 
-const Board = ({ board, onCellClick }) => {
+const Board = ({ board, onCellClick, gameOver}) => {
   return (
     <div className="board">
       {board.map((row, rIndex) => (
@@ -11,6 +11,7 @@ const Board = ({ board, onCellClick }) => {
               key={`${rIndex}-${cIndex}`}
               value={cell}
               onClick={() => onCellClick(rIndex, cIndex)}
+              gameOver={gameOver}
             />
           ))}
         </div>

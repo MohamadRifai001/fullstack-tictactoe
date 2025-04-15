@@ -6,8 +6,11 @@ import com.mohamad.tictactoe_backend.model.GameState;
 import com.mohamad.tictactoe_backend.model.Player;
 import com.mohamad.tictactoe_backend.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 
 @RestController
@@ -46,4 +49,17 @@ public class GameController {
         GameState game = gameService.getGame(gameId);
         return ResponseEntity.ok(game);
     }
+
+    @PostMapping("/{gameId}/minigame/winner")
+    public ResponseEntity<?> setMinigameWinner(@PathVariable String gameId, @RequestBody Map<String, String> body) {
+        String winner = body.get("playerId");
+        GameState game = gameService.getGame(gameId);
+        if(game.getMinigameWinner() != null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("minigame winner already declared");
+        }
+        gameService.expandBoard(gameId);
+        GameState updatedgame = gameService.setMinigameWinner(gameId, winner);
+        return ResponseEntity.ok(updatedgame);
+    }
+
 }

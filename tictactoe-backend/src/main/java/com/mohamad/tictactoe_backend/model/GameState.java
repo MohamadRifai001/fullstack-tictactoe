@@ -13,6 +13,8 @@ public class GameState {
     private Player player2;
     private Player currentPlayer; //player1 or player2
     private GameStatus status;
+    private String winner;
+    private String minigameWinner;
 
     public enum GameStatus {
         IN_PROGRESS,
@@ -52,13 +54,15 @@ public class GameState {
         if (row < 0 || col < 0 || row >= boardSize || col >= boardSize) {
             throw new IllegalArgumentException("Out of bounds");
         };
-        if (board[row][col] != "-") {
+        if (!board[row][col].equals("-")) {
             throw new IllegalArgumentException("This tile is already used!");
         }
 
         currentPlayer = findPlayer(playerId);
 
         board[row][col] = currentPlayer.getSymbol();
+
+        switchPlayer();
 
         updateGameStatus();
     }
@@ -69,10 +73,12 @@ public class GameState {
         String winner = checkWinner();
         if (winner != null) {
             status = GameStatus.WIN;
+            this.winner = winner;
         }
         else if (isBoardFull()) {
             if (boardSize == 3) {
                 status = GameStatus.WAITING_FOR_MINIGAME;
+                minigameWinner = null;
             }
             else {
                 status = GameStatus.TIE;
@@ -212,6 +218,18 @@ public class GameState {
         throw new IllegalArgumentException("Player not found");
     }
 
+    private void switchPlayer() {
+        if(currentPlayer.getId().equals(player1.getId())) currentPlayer = player2;
+        else if(currentPlayer.getId().equals(player2.getId())) currentPlayer = player1;
+    }
+
+    public void handleMinigame(String name) {
+        winner = name;
+
+        currentPlayer = findPlayer(name);
+        status = GameStatus.IN_PROGRESS;
+    }
+
     // Getters -- needed for Spring boot serialization
 
     public String[][] getBoard() {
@@ -236,5 +254,13 @@ public class GameState {
 
     public Player getPlayer2() {
         return player2;
+    }
+
+    public String getWinner() {
+        return winner;
+    }
+
+    public String getMinigameWinner() {
+        return minigameWinner;
     }
 }

@@ -1,11 +1,11 @@
-import React from 'react';
-import '../styles/StatusBar.css';
+import React from "react";
+import "../styles/StatusBar.css";
 
-const StatusBar = ({ currentPlayer, status}) => {
+const StatusBar = ({ currentPlayer, status, winner }) => {
   const renderMessage = () => {
-    //if (status === "WIN") return "🎉 You won!";
-    //if (status === "LOSE") return "💀 You lost!";
-    //if (status === "TIE") return "🤝 It's a tie!";
+    if (status === "WIN") return `🎉 ${winner} won!`;
+    if (status === "WAITING_FOR_MINIGAME")
+      return "It's a tie! Please wait for the minigame";
     return `Waiting for ${currentPlayer}'s move...`;
   };
 
