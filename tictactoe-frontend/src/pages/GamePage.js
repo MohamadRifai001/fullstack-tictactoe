@@ -26,8 +26,8 @@ function GamePage() {
         } else {
           setShowMinigame(false);
         }
-        if(state.status === "IN_PROGRESS") {
-            setRematchRequested(false);
+        if (state.status === "IN_PROGRESS") {
+          setRematchRequested(false);
         }
         setFetchFailures(0); // Reset fetch failures on successful fetch
       } catch (error) {
@@ -82,20 +82,39 @@ function GamePage() {
 
   return (
     <div className="game-page">
-      <h2>Lobby: {lobbyCode}</h2>
-      <h2>Player: {playerName}</h2>
+      <div className="top-bar">
+        <div className="players-status">
+          <div className="player-name player1-name">
+            {gameState.player1?.name}
+            {gameState.player1Rematch && (
+              <span className="rematch-tag"> wants a rematch</span>
+            )}
+          </div>
+          <div className="player-name player2-name">
+            {gameState.player2?.name}
+            {gameState.player2Rematch && (
+              <span className="rematch-tag"> wants a rematch</span>
+            )}
+          </div>
+        </div>
+        <h2 className="lobby-code">Lobby: {lobbyCode}</h2>{" "}
+      </div>
+
       <StatusBar
         currentPlayer={gameState.currentPlayer.name}
         status={gameState.status}
         winner={gameState.winner}
       />
+
       {rematchRequested && <h1>Waiting for the other player to rematch</h1>}
+
       {(gameState.status === "WIN" || gameState.status === "TIE") &&
         !rematchRequested && (
           <button className="rematch-button" onClick={handleRematch}>
             Rematch
           </button>
         )}
+
       {showMinigame ? (
         <Minigame
           lobbyCode={lobbyCode}

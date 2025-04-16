@@ -76,7 +76,8 @@ public class GameState {
         String winner = checkWinner();
         if (winner != null) {
             status = GameStatus.WIN;
-            this.winner = winner;
+            if(winner.equals("X")) this.winner = player1.getName();
+            else if(winner.equals("O")) this.winner = player2.getName();
         }
         else if (isBoardFull()) {
             if (boardSize == 3) {

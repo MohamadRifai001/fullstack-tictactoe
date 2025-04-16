@@ -70,4 +70,47 @@
   .rematch-button:hover {
     background-color: #45a049;
   }
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    padding: 0 20px;
+  }
+  
+  .players-status {
+    text-align: left;
+    font-size: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .player-name {
+    font-weight: bold;
+  }
+
+  .player1-name {
+    color: #4caf50; 
+  }
+
+  .player2-name {
+    color: #2196f3;
+  }
+  
+  .rematch-tag {
+    color: #ffa500;
+    margin-left: 8px;
+    font-weight: normal;
+    font-style: italic;
+  }
+
+  .lobby-code {
+    font-size: 1.2rem;
+    font-weight: normal;
+    margin: 0;
+    color: #ccc;
+  }
   
