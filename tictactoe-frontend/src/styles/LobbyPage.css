@@ -66,3 +66,27 @@
     66%  { content: '...'; }
     100% { content: '.'; }
   }
+
+  .player-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+  }
+  
+  .ready-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 10px;
+    background-color: gray; /* default */
+  }
+  
+  .ready-indicator.ready {
+    background-color: #4caf50; /* green */
+  }
+  
+  .ready-indicator.not-ready {
+    background-color: #bbb;
+  }

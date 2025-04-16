@@ -6,6 +6,7 @@ following methods are for interacting with the backend for game management
 */
 // Tells the backend server to start a new game with the given player names
 export async function startGame(gameId, player1, player2) {
+  console.log(gameId, player1, player2);
   const res = await fetch(`${API_BASE}/game/${gameId}/start`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

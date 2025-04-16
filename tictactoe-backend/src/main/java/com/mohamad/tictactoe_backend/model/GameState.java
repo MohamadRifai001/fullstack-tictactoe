@@ -294,6 +294,7 @@ public class GameState {
     public boolean isPlayer1Rematch() {
         return player1Rematch;
     }
+
     public boolean isPlayer2Rematch() {
         return player2Rematch;
     }

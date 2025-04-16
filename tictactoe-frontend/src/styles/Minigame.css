@@ -76,3 +76,19 @@
   .button-slide:hover::after {
     left: 100%;
   }
+
+  .bouncing-button {
+    transition: top 0.3s ease, left 0.3s ease; /* Smooth movement */
+    padding: 12px 24px;
+    font-size: 1rem;
+    color: white;
+    background: linear-gradient(to right, #0077ff, #00c6ff);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    position: absolute; /* Required for dynamic positioning */
+  }
+  
+  .bouncing-button:hover {
+    background-color: #00aeff;
+  }

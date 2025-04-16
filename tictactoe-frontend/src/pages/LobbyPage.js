@@ -23,7 +23,12 @@ function LobbyPage() {
       try {
         const status = await getLobbyStatus(lobbyCode);
         if (status) {
-          setPlayers([status.player1, status.player2].filter(Boolean));
+          setPlayers(
+            [
+              { name: status.player1, ready: status.player1Ready },
+              { name: status.player2, ready: status.player2Ready },
+            ].filter((p) => p.name)
+          );
           if (status.started) {
             navigate(`/game/${lobbyCode}`, {
               state: { playerName: playerName.name },
@@ -65,7 +70,7 @@ function LobbyPage() {
 
     if (status && status.started) {
       try {
-        await startGame(lobbyCode, players[0], players[1]);
+        await startGame(lobbyCode, players[0].name, players[1].name);
       } catch (err) {
         console.error("Error creating game:", err);
         alert("Error creating game. Please try again.");
@@ -77,11 +82,15 @@ function LobbyPage() {
     <div className="lobby-page">
       <h2> Share this lobby code to invite a friend: {lobbyCode}</h2>
       <p className="waiting-text dots">Waiting for Players</p>
-      <ul>
-        {players.map((p, i) => (
-          <li key={i}>{p}</li>
-        ))}
-      </ul>
+      {players.map((p, i) => (
+        <div key={i} className="player-row">
+          <span
+            className={`ready-indicator ${p.ready ? "ready" : "not-ready"}`}
+            title={p.ready ? "Ready" : "Not ready"}
+          ></span>
+          <span>{p.name}</span>
+        </div>
+      ))}
       {players.length === 2 && !ready && (
         <button className="button-slide" onClick={handleReady}>
           Ready
