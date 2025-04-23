@@ -90,4 +90,11 @@ public class LobbyService {
         }
     }
 
+    /*
+    for test cases
+     */
+    public Map<String, Lobby> getLobbies() {
+        return lobbies;
+    }
+
 }

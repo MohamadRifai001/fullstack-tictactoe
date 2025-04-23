@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -85,7 +84,6 @@ class GameControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isOk())
-                .andDo(print())
                 .andExpect(jsonPath("$.board").exists())
                 .andExpect(jsonPath("$.status").value("IN_PROGRESS"))
                 .andExpect(jsonPath("$.player1.id").value(player1.getId()))
@@ -109,3 +107,11 @@ class GameControllerTest {
                 .andExpect(jsonPath("$.player1.id").value(player1.getId()));
     }
 }
+
+
+
+
+
+/*
+.andDo(print()) in the .perform to print out the json.
+ */

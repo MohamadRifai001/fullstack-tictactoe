@@ -19,8 +19,10 @@ function GamePage() {
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
+        console.log("Fetching game state...");
         const state = await getGameState(lobbyCode);
         setGameState(state);
+
         if (state.status === "WAITING_FOR_MINIGAME") {
           setShowMinigame(true);
         } else {
